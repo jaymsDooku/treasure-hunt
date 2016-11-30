@@ -1,62 +1,78 @@
 package com.jayms.treasurehunt;
 
-import com.jayms.treasurehunt.TreasureHuntApp.Anims;
-
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 public class TreasureHuntApp extends Application {
+	
+	private static final int ROWS = 8;
+    private static final int COLUMNS = 8;
+    private static final String STYLE_SHEET = "styles.css";
+    
+    private Stage stage;
+    private Scene gameScene;
+    private Scene menuScene;
+	
+	@Override
+	public void init() throws Exception {
+		
+		//gameScene
+		Grid grid = new Grid(ROWS, COLUMNS);
+
+		
+		gameScene = new Scene(grid, (COLUMNS * 100) + 100, (ROWS * 100) + 100, Color.WHITE);
+		setStyleSheet(gameScene, STYLE_SHEET);
+		
+		//menuScene
+		VBox menuButtons = new VBox();
+        menuButtons.getStyleClass().add("menu-vbox");
+        
+        Button playGame = new Button("Play Game");
+        playGame.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent e) {
+				stage.setScene(gameScene);
+			}
+        	
+        });
+        Button quitGame = new Button("Quit");
+        
+        menuButtons.getChildren().addAll(playGame, quitGame);
+        
+        for (Node n : menuButtons.getChildren()) {
+        	if (n instanceof Button) {
+        		Button but = (Button) n;
+        		but.getStyleClass().add("menu-button");
+        	}
+        }
+        menuButtons.setAlignment(Pos.CENTER);
+        menuScene = new Scene(menuButtons, 800, 500, Color.WHITE);
+        setStyleSheet(menuScene, STYLE_SHEET);
+		
+	}
 
 	@Override
     public void start(final Stage stage) throws Exception {
-        int rows = 8;
-        int columns = 8;
-
+		this.stage = stage;
         stage.setTitle("TreasureHunt");
-
-        GridPane grid = new GridPane();
-        grid.getStyleClass().add("game-grid");
-
-        for(int i = 0; i < columns; i++) {
-            ColumnConstraints column = new ColumnConstraints(100);
-            grid.getColumnConstraints().add(column);
-        }
-
-        for(int i = 0; i < rows; i++) {
-            RowConstraints row = new RowConstraints(100);
-            grid.getRowConstraints().add(row);
-        }
-
-        for (int i = 0; i < columns; i++) {
-            for (int j = 0; j < rows; j++) {
-                Pane pane = new Pane();
-                pane.setOnMouseReleased(e -> {
-                    pane.getChildren().add(Anims.getAtoms(1));
-                });
-                pane.getStyleClass().add("game-grid-cell");
-                if (i == 0) {
-                    pane.getStyleClass().add("first-column");
-                }
-                if (j == 0) {
-                    pane.getStyleClass().add("first-row");
-                }
-                grid.add(pane, i, j);
-            }
-        }
-
-
-        Scene scene = new Scene(grid, (columns * 100) + 100, (rows * 100) + 100, Color.WHITE);
-        scene.getStylesheets().add(this.getClass().getResource("styles.css").toExternalForm());
-        stage.setScene(scene);
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/img/treasure_hunt_logo.png")));
+        stage.setScene(menuScene);
         stage.show();
     }
 
@@ -71,6 +87,10 @@ public class TreasureHuntApp extends Application {
 //            scene.setFill(Color.TRANSPARENT);
             return group;
         }
+    }
+    
+    private void setStyleSheet(Scene scene, String file) {
+    	scene.getStylesheets().add(this.getClass().getResource(file).toExternalForm());
     }
 
     public static void main(final String[] arguments) {
