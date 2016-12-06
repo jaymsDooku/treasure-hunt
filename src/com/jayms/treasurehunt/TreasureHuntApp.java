@@ -22,6 +22,8 @@ public class TreasureHuntApp extends Application {
 	
 	private static final int ROWS = 8;
     private static final int COLUMNS = 8;
+    private static final int TREASURE_CHESTS = 10;
+    private static final int BANDITS = 5;
     private static final String STYLE_SHEET = "styles.css";
     
     private Stage stage;
@@ -32,10 +34,10 @@ public class TreasureHuntApp extends Application {
 	public void init() throws Exception {
 		
 		//gameScene
-		Grid grid = new Grid(ROWS, COLUMNS);
+		TreasureGrid grid = new TreasureGrid(ROWS, COLUMNS, TREASURE_CHESTS, BANDITS);
 
 		
-		gameScene = new Scene(grid, (COLUMNS * 100) + 100, (ROWS * 100) + 100, Color.WHITE);
+		gameScene = new Scene(grid, (COLUMNS * 100), (ROWS * 100), Color.WHITE);
 		setStyleSheet(gameScene, STYLE_SHEET);
 		
 		//menuScene

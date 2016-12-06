@@ -40,5 +40,13 @@ public class Grid extends GridPane {
             }
         }
 	}
+	
+	public int getRowCount() {
+		return this.getRowConstraints().size();
+	}
+	
+	public int getColumnCount() {
+		return this.getColumnConstraints().size();
+	}
 
 }
