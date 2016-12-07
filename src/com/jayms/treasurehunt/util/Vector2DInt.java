@@ -38,4 +38,9 @@ public class Vector2DInt {
 		}
 		return false;
 	}
+	
+	@Override
+	public String toString() {
+		return "X = " + x + "; Y = " + y + ";";
+	}
 }

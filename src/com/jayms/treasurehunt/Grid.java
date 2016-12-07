@@ -1,11 +1,13 @@
 package com.jayms.treasurehunt;
 
-import com.jayms.treasurehunt.TreasureHuntApp.Anims;
-
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
+
+import com.jayms.treasurehunt.TreasureHuntApp.Anims;
 
 public class Grid extends GridPane {
 	
@@ -25,18 +27,15 @@ public class Grid extends GridPane {
 
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < rows; j++) {
-                Pane pane = new Pane();
-                pane.setOnMouseReleased(e -> {
-                    pane.getChildren().add(Anims.getAtoms(1));
-                });
-                pane.getStyleClass().add("game-grid-cell");
+                GridSlot slot = new GridSlot();
+                slot.getStyleClass().add("game-grid-cell");
                 if (i == 0) {
-                    pane.getStyleClass().add("first-column");
+                	slot.getStyleClass().add("first-column");
                 }
                 if (j == 0) {
-                    pane.getStyleClass().add("first-row");
+                	slot.getStyleClass().add("first-row");
                 }
-                this.add(pane, i, j);
+                this.add(slot, i, j);
             }
         }
 	}
@@ -49,4 +48,19 @@ public class Grid extends GridPane {
 		return this.getColumnConstraints().size();
 	}
 
+	public GridSlot getGridSlot(int row, int col) {
+		GridSlot result = null;
+		ObservableList<Node> childrens = this.getChildren();
+
+	    for (Node node : childrens) {
+	    	if (!(node instanceof GridSlot)) {
+	    		continue;
+	    	}
+	        if(GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == col) {
+	            result = (GridSlot) node;
+	            break;
+	        }
+	    }
+	    return result;
+	}
 }

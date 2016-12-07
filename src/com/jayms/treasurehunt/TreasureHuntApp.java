@@ -29,14 +29,13 @@ public class TreasureHuntApp extends Application {
     private Stage stage;
     private Scene gameScene;
     private Scene menuScene;
+    private TreasureGrid grid;
 	
 	@Override
 	public void init() throws Exception {
 		
 		//gameScene
-		TreasureGrid grid = new TreasureGrid(ROWS, COLUMNS, TREASURE_CHESTS, BANDITS);
-
-		
+		grid = new TreasureGrid(ROWS, COLUMNS, TREASURE_CHESTS, BANDITS);
 		gameScene = new Scene(grid, (COLUMNS * 100), (ROWS * 100), Color.WHITE);
 		setStyleSheet(gameScene, STYLE_SHEET);
 		
@@ -49,7 +48,7 @@ public class TreasureHuntApp extends Application {
 
 			@Override
 			public void handle(ActionEvent e) {
-				stage.setScene(gameScene);
+				initGame();
 			}
         	
         });
@@ -89,6 +88,11 @@ public class TreasureHuntApp extends Application {
 //            scene.setFill(Color.TRANSPARENT);
             return group;
         }
+    }
+    
+    private void initGame() {
+    	grid.initGame();
+    	stage.setScene(gameScene);
     }
     
     private void setStyleSheet(Scene scene, String file) {

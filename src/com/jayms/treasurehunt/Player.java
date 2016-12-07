@@ -1,14 +1,12 @@
 package com.jayms.treasurehunt;
 
+import com.jayms.treasurehunt.util.Util;
+
 import javafx.scene.image.ImageView;
 
-public class Player exte{
-
-	private ImageView texture;
-	private TreasureGrid map;
+public class Player extends Entity {
 	
-	public Player(ImageView texture, TreasureGrid map) {
-		this.texture = texture;
-		this.map = map;
+	public Player() {
+		super(new ImageView(Util.getImage("/resources/img/player.jpg")));
 	}
 }

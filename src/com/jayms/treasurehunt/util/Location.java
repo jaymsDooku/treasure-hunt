@@ -4,8 +4,16 @@ import com.jayms.treasurehunt.TreasureGrid;
 
 public class Location {
 
-	private TreasureGrid grid;
+	private TreasureGrid grid = null;
 	private Vector2DInt pos;
+	
+	public Location() {
+		this(new Vector2DInt());
+	}
+	
+	public Location(Vector2DInt pos) {
+		this.pos = pos;
+	}
 	
 	public Location(TreasureGrid grid) {
 		this(new Vector2DInt(), grid);
@@ -24,8 +32,10 @@ public class Location {
 	}
 	
 	public void setTreasureGrid(TreasureGrid set) {
-		if (this.grid.equals(set)) {
-			return;
+		if (grid != null) {
+			if (this.grid.equals(set)) {
+				return;
+			}
 		}
 		this.grid = set;
 	}
@@ -36,5 +46,10 @@ public class Location {
 	
 	public Vector2DInt getPosition() {
 		return pos;
+	}
+	
+	@Override
+	public String toString() {
+		return "TreasureGrid: " + grid + "\nPosition: " + pos.toString();
 	}
 }
