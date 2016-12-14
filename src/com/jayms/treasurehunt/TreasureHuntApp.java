@@ -9,14 +9,12 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+
+import com.jayms.treasurehunt.Game.GameInitData;
 
 public class TreasureHuntApp extends Application {
 	
@@ -24,20 +22,19 @@ public class TreasureHuntApp extends Application {
     private static final int COLUMNS = 8;
     private static final int TREASURE_CHESTS = 10;
     private static final int BANDITS = 5;
-    private static final String STYLE_SHEET = "styles.css";
+    private static final int WIDTH = 100;
+    private static final int LENGTH = 100;
+    
+    public static final String STYLE_SHEET = "styles.css";
     
     private Stage stage;
     private Scene gameScene;
     private Scene menuScene;
     private TreasureGrid grid;
+    private Game game;
 	
 	@Override
 	public void init() throws Exception {
-		
-		//gameScene
-		grid = new TreasureGrid(ROWS, COLUMNS, TREASURE_CHESTS, BANDITS);
-		gameScene = new Scene(grid, (COLUMNS * 100), (ROWS * 100), Color.WHITE);
-		setStyleSheet(gameScene, STYLE_SHEET);
 		
 		//menuScene
 		VBox menuButtons = new VBox();
@@ -91,12 +88,13 @@ public class TreasureHuntApp extends Application {
     }
     
     private void initGame() {
-    	grid.initGame();
-    	stage.setScene(gameScene);
+    	GameInitData data = new GameInitData(ROWS, COLUMNS, TREASURE_CHESTS, BANDITS, WIDTH, LENGTH);
+    	game = new Game(data);
+    	game.start(stage);
     }
     
-    private void setStyleSheet(Scene scene, String file) {
-    	scene.getStylesheets().add(this.getClass().getResource(file).toExternalForm());
+    public static void setStyleSheet(Scene scene, String file) {
+    	scene.getStylesheets().add(TreasureHuntApp.class.getResource(file).toExternalForm());
     }
 
     public static void main(final String[] arguments) {

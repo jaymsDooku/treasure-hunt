@@ -34,3 +34,14 @@
 	-fx-scale-y: 1.1;
 	-fx-font-weight: 900;
 }
+
+.promptbox {
+	-fx-spacing: 10px;
+	-fx-background-color: linear-gradient(to bottom right, red, black);
+	-fx-padding: 10 40 10 40;
+}
+
+.notification {
+	-fx-text-fill: white;
+	-fx-font-size: 16px;
+}

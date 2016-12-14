@@ -12,8 +12,6 @@ import com.jayms.treasurehunt.util.Util;
 import com.jayms.treasurehunt.util.Vector2DInt;
 
 public class TreasureGrid extends Grid {
-
-	private static final ImageView EMPTY_TEXTURE = new ImageView(Util.getImage("/resources/img/hammer_and_sickle.png"));
 	
 	private int treasureChests;
 	private int bandits;
@@ -26,7 +24,7 @@ public class TreasureGrid extends Grid {
 		this.bandits = bandits;
 	}
 	
-	public void initGame() {
+	public Player initGame() {
 		for (int i = 0; i < treasureChests; i++) {
 			addEntity(new Chest());
 		}
@@ -37,7 +35,17 @@ public class TreasureGrid extends Grid {
 		addEntity(p);
 		moveEntity(p, new Vector2DInt(0, 0));
 		randomizeEntities();
+		for (int i = 0; i < this.getRowCount(); i++) {
+			for (int j = 0; j < this.getColumnCount(); j++) {
+				GridSlot slot = this.getGridSlot(i, j);
+				if (!slot.hasEntity()) {
+					System.out.println("no entity");
+					slot.empty();
+				}
+			}
+		}
 		initialized = true;
+		return p;
 	}
 	
 	public void addEntity(Entity entity) {
