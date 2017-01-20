@@ -72,13 +72,28 @@ public class Game {
 	private NumberTextField numberTextField;
 	private Label notification;
 	
+	private HBox displayBox;
+	private Label coins;
+	private Label treasureChests;
+	private Label bandits;
+	
 	private TreasureGrid grid;
 	private Player p;
 	
 	public Game(GameInitData data) {
-		grid = new TreasureGrid(data.getRows(), data.getColumns(), data.getTreasureChests(), data.getBandits());
+		treasureChests = new Label("Treasure Chests: 10");
+		treasureChests.getStyleClass().add("notification");
+		bandits = new Label("Bandits: 5");
+		bandits.getStyleClass().add("notification");
+		grid = new TreasureGrid(data.getRows(), data.getColumns(), data.getTreasureChests(), data.getBandits(), treasureChests, bandits);
 		promptBox = new HBox();
 		promptBox.getStyleClass().add("promptbox");
+		displayBox = new HBox();
+		displayBox.getStyleClass().add("promptbox");
+		displayBox.setAlignment(Pos.CENTER);
+		displayBox.setPrefHeight(50);
+		coins = new Label("Coins: 0");
+		coins.getStyleClass().add("notification");
 		confirmButton = new Button("Confirm");
 		confirmButton.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -95,14 +110,15 @@ public class Game {
 		promptBox.getChildren().addAll(dropDown, numberTextField, confirmButton, notification);
 		promptBox.setAlignment(Pos.CENTER);
 		promptBox.setPrefHeight(50);
+		displayBox.getChildren().addAll(coins, treasureChests, bandits);
 		gameLayout = new VBox();
-		gameLayout.getChildren().addAll(grid, promptBox);
-		gameScene = new Scene(gameLayout, (data.getRows() * 100), ((data.getColumns() * 100) + promptBox.getPrefHeight()), Color.WHITE);
+		gameLayout.getChildren().addAll(grid, promptBox, displayBox);
+		gameScene = new Scene(gameLayout, (data.getRows() * 100), ((data.getColumns() * 100) + promptBox.getPrefHeight() + displayBox.getPrefHeight()), Color.WHITE);
 		TreasureHuntApp.setStyleSheet(gameScene, TreasureHuntApp.STYLE_SHEET);
 	}
 	
 	public void start(Stage stage) {
-		p = grid.initGame();
+		p = grid.initGame(coins);
 		stage.setScene(gameScene);
 		enterMove();
 	}
@@ -137,26 +153,26 @@ public class Game {
 		int x = pos.getX();
 		int y = pos.getY();
 		switch (direction) {
-		case "Up":
+		case "Left":
 			y = (y - num);
 			if (y < 0) {
 				System.out.println("too big");
 			}
 			
 			break;
-		case "Down":
+		case "Right":
 			y = (y + num);
 			if (y > 7) {
 				System.out.println("too big");
 			}
 			break;
-		case "Left":
+		case "Up":
 			x = (x - num);
 			if (x < 0) {
 				System.out.println("too big");
 			}
 			break;
-		case "Right":
+		case "Down":
 			x = (x + num);
 			if (x > 7) {
 				System.out.println("too big");
@@ -165,6 +181,20 @@ public class Game {
 		default:
 			throw new RuntimeException("gg");
 		}
-		grid.moveEntity(p, new Vector2DInt(x, y));
+		Vector2DInt newPos = new Vector2DInt(x, y);
+		Entity ent = grid.readyMovePlayer(newPos);
+		if (ent != null) {
+			if (ent instanceof Chest) {
+				Chest chest = (Chest) ent;
+				if (!chest.visit()) {
+					p.addCoins(chest.getWorth());
+				}else {
+					
+				}
+			}else if (ent instanceof Bandit) {
+				p.resetCoins();
+			}
+		}
+		grid.moveEntity(p, newPos);
 	}
 }

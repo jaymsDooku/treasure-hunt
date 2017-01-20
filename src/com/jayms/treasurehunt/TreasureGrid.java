@@ -6,46 +6,52 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javafx.scene.image.ImageView;
+import javafx.scene.control.Label;
 
 import com.jayms.treasurehunt.util.Util;
 import com.jayms.treasurehunt.util.Vector2DInt;
 
 public class TreasureGrid extends Grid {
 	
-	private int treasureChests;
-	private int bandits;
+	private static final String BANDIT_FORMAT = "Bandits: %i";
+	private static final String CHEST_FORMAT = "Treasure Chests: %i";
+	private static final int CHEST_WORTH = 10;
+	
+	private LabelIntBinder treasureChests;
+	private LabelIntBinder bandits;
 	private Map<UUID, Entity> entities = new HashMap<>();
 	private boolean initialized = false;
 	
-	public TreasureGrid(int rows, int columns, int treasureChests, int bandits) {
+	public TreasureGrid(int rows, int columns, int treasureChests, int bandits, Label treasureLabel, Label banditsLabel) {
 		super(rows, columns);
-		this.treasureChests = treasureChests;
-		this.bandits = bandits;
+		this.treasureChests = new LabelIntBinder(treasureChests, treasureLabel, CHEST_FORMAT);
+		this.treasureChests.setInt(treasureChests);
+		this.bandits = new LabelIntBinder(bandits, banditsLabel, BANDIT_FORMAT);
+		this.bandits.setInt(bandits);
 	}
 	
-	public Player initGame() {
-		for (int i = 0; i < treasureChests; i++) {
-			addEntity(new Chest());
+	public Player initGame(Label coinLabel) {
+		for (int i = 0; i < treasureChests.getInt(); i++) {
+			addEntity(new Chest(CHEST_WORTH));
 		}
-		for (int i = 0; i < bandits; i++) {
+		for (int i = 0; i < bandits.getInt(); i++) {
 			addEntity(new Bandit());
 		}
-		Player p = new Player();
+		Player p = new Player(coinLabel);
 		addEntity(p);
-		moveEntity(p, new Vector2DInt(0, 0));
+		movePlayer(p, new Vector2DInt(0, 0));
 		randomizeEntities();
-		for (int i = 0; i < this.getRowCount(); i++) {
-			for (int j = 0; j < this.getColumnCount(); j++) {
-				GridSlot slot = this.getGridSlot(i, j);
-				if (!slot.hasEntity()) {
-					System.out.println("no entity");
-					slot.empty();
-				}
-			}
-		}
 		initialized = true;
 		return p;
+	}
+	
+	public Entity readyMovePlayer(Vector2DInt pos) {
+		GridSlot slot = this.getGridSlot(pos.getX(), pos.getY());
+		if (!slot.hasEntity()) {
+			return null;
+		}
+		slot.cacheCurrentEntity();
+		return slot.getEntity();
 	}
 	
 	public void addEntity(Entity entity) {
@@ -99,6 +105,21 @@ public class TreasureGrid extends Grid {
 			return;
 		}
 		slot.setEntity(entity);
+	}
+	
+	public void movePlayer(Player p, Vector2DInt pos) {
+		if (!onGrid(p)) {
+			return;
+		}
+		Vector2DInt currentPos = p.getLocation().getPosition();
+		GridSlot currentSlot = this.getGridSlot(currentPos.getX(), currentPos.getY());
+		currentSlot.restoreCachedEntity();
+		System.out.println(currentSlot.getEntity());
+		System.out.println(currentSlot.getCachedEntity());
+		if (!currentSlot.cachedEntity() && !currentSlot.hasEntity()) {
+			currentSlot.empty();
+		}
+		moveEntity(p, pos);
 	}
 	
 	public boolean initialized() {

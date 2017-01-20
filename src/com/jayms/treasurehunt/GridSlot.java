@@ -11,6 +11,7 @@ public class GridSlot extends Pane {
 
 	private static final String EMPTY_TEXTURE = "/resources/img/hammer_and_sickle.png";
 	
+	private Entity cached;
 	private Entity entity;
 	
 	public GridSlot() {
@@ -35,6 +36,22 @@ public class GridSlot extends Pane {
 		Util.fitImage(99, 99, false, img);
 		setTexture(img);
 		entity = null;
+	}
+	
+	public void cacheCurrentEntity() {
+		this.cached = entity;
+	}
+	
+	public void restoreCachedEntity() {
+		setEntity(cached);
+	}
+	
+	public boolean cachedEntity() {
+		return cached != null;
+	}
+	
+	public Entity getCachedEntity() {
+		return cached;
 	}
 	
 	public boolean hasEntity() {
