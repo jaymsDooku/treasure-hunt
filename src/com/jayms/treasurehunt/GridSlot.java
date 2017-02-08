@@ -43,7 +43,9 @@ public class GridSlot extends Pane {
 	}
 	
 	public void restoreCachedEntity() {
-		setEntity(cached);
+		if (cached != null) {
+			setEntity(cached);
+		}
 	}
 	
 	public boolean cachedEntity() {

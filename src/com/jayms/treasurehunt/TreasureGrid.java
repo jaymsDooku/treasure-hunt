@@ -59,7 +59,7 @@ public class TreasureGrid extends Grid {
 			return;
 		}
 		entities.put(entity.getUniqueID(), entity);
-	}
+	} 
 	
 	public void removeEntity(Entity entity) {
 		if (onGrid(entity)) {
