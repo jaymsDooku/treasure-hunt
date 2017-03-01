@@ -2,6 +2,10 @@ package com.jayms.treasurehunt;
 
 import java.util.ArrayList;
 
+import com.jayms.treasurehunt.util.NumberTextField;
+import com.jayms.treasurehunt.util.Util;
+import com.jayms.treasurehunt.util.Vector2DInt;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -13,10 +17,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
-import com.jayms.treasurehunt.util.NumberTextField;
-import com.jayms.treasurehunt.util.Util;
-import com.jayms.treasurehunt.util.Vector2DInt;
 
 public class Game {
 	
@@ -62,6 +62,12 @@ public class Game {
 			return length;
 		}
 	}
+	
+	private Scene gameOverScene;
+	private VBox gameOverLayout;
+	private Label youWin;
+	private Label youLose;
+	private Button backToMenu;
 
 	private Scene gameScene;
 	private VBox gameLayout;
@@ -85,7 +91,7 @@ public class Game {
 		treasureChests.getStyleClass().add("notification");
 		bandits = new Label("Bandits: 5");
 		bandits.getStyleClass().add("notification");
-		grid = new TreasureGrid(data.getRows(), data.getColumns(), data.getTreasureChests(), data.getBandits(), treasureChests, bandits);
+		grid = new TreasureGrid(data.getRows(), data.getColumns(), data.getTreasureChests(), data.getBandits(), treasureChests, bandits, this);
 		promptBox = new HBox();
 		promptBox.getStyleClass().add("promptbox");
 		displayBox = new HBox();
@@ -115,24 +121,65 @@ public class Game {
 		gameLayout.getChildren().addAll(grid, promptBox, displayBox);
 		gameScene = new Scene(gameLayout, (data.getRows() * 100), ((data.getColumns() * 100) + promptBox.getPrefHeight() + displayBox.getPrefHeight()), Color.WHITE);
 		TreasureHuntApp.setStyleSheet(gameScene, TreasureHuntApp.STYLE_SHEET);
+		
+		youWin = new Label("You win!");
+		youWin.getStyleClass().add("you-win");
+		youLose = new Label("You lose!");
+		youLose.getStyleClass().add("you-lose");
+		
+		backToMenu = new Button("Back To Menu");
+		backToMenu.getStyleClass().add("menu-button");
+		backToMenu.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent e) {
+				TreasureHuntApp.instance.backToMenu();
+			}
+			
+		});
+		
+		gameOverLayout = new VBox();
+		gameOverLayout.setAlignment(Pos.CENTER);
+		gameOverScene = new Scene(gameOverLayout, 800, 500, Color.WHITE);
+		TreasureHuntApp.setStyleSheet(gameOverScene, TreasureHuntApp.STYLE_SHEET);
 	}
 	
-	public void start(Stage stage) {
-		p = grid.initGame(coins);
+	private Stage stage;
+	
+	public void start(Stage s) {
+		stage = s;
+		p = grid.initGame(this, coins);
+		this.stage = s;
 		stage.setScene(gameScene);
 		enterMove();
 	}
 	
-	private String[] directions = {"Up", "Down", "Left", "Right"};
+	public void gameOver(boolean won) {
+		gameOverLayout.getChildren().clear();
+		if (won) {
+			backToMenu.getStyleClass().add("win-btm");
+			gameOverLayout.getStyleClass().add("win-gameover");
+			gameOverLayout.getChildren().addAll(youWin, backToMenu);
+		} else {
+			gameOverLayout.getStyleClass().add("lose-gameover");
+			gameOverLayout.getChildren().addAll(youLose, backToMenu);
+		}
+		stage.setScene(gameOverScene);
+	}
+	
+	private String[] directions = {"Left", "Right", "Up", "Down"};
 	
 	public void enterMove() {
+		if (!dropDown.getItems().isEmpty()) {
+			dropDown.getItems().clear();
+		}
 		Vector2DInt pos = p.getLocation().getPosition();
 		int x = pos.getX();
 		int y = pos.getY();
-		int down = y == 0 ? -1 : 0;
-		int up = y == 7 ? -1 : 1;
-		int left = x == 0 ? -1 : 2;
-		int right = x == 7 ? -1 : 3;
+		int left = y == 0 ? -1 : 0;
+		int right = y == 7 ? -1 : 1;
+		int up = x == 0 ? -1 : 2;
+		int down = x == 7 ? -1 : 3;
 		ArrayList<Integer> indices = new ArrayList<>();
 		Util.addIfNotNegative(down, indices);
 		Util.addIfNotNegative(up, indices);
@@ -168,6 +215,7 @@ public class Game {
 			break;
 		case "Up":
 			x = (x - num);
+			System.out.println("up");
 			if (x < 0) {
 				System.out.println("too big");
 			}
@@ -184,17 +232,9 @@ public class Game {
 		Vector2DInt newPos = new Vector2DInt(x, y);
 		Entity ent = grid.readyMovePlayer(newPos);
 		if (ent != null) {
-			if (ent instanceof Chest) {
-				Chest chest = (Chest) ent;
-				if (!chest.visit()) {
-					p.addCoins(chest.getWorth());
-				}else {
-					
-				}
-			}else if (ent instanceof Bandit) {
-				p.resetCoins();
-			}
+			ent.onLand(p);
 		}
-		grid.moveEntity(p, newPos);
+		grid.movePlayer(p, newPos);
+		enterMove();
 	}
 }

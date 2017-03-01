@@ -21,9 +21,24 @@ public class Chest extends Entity {
 	
 	public boolean visit() {
 		visitCount++;
-		if (visitCount >= 3) {
+		if (visitCount > 3) {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void onLand(Player p) {
+		if (!visit()) {
+			p.addCoins(getWorth());
+			if (visitCount == 3) {
+				TreasureGrid grid = loc.getTreasureGrid();
+				Bandit bandit = new Bandit();
+				grid.addEntity(bandit);
+				grid.getGridSlot(loc.getPosition().getX(), loc.getPosition().getY()).setCachedEntity(bandit);
+				grid.removeEntity(this);
+				
+			}
+		}
 	}
 }

@@ -11,4 +11,9 @@ public class Bandit extends Entity {
 		super(new ImageView(Util.getImage("/resources/img/bandit.jpg")));
 	}
 
+	@Override
+	public void onLand(Player p) {
+		p.resetCoins();
+	}
+
 }

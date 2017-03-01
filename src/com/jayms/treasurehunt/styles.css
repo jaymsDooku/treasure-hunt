@@ -45,3 +45,29 @@
 	-fx-text-fill: white;
 	-fx-font-size: 16px;
 }
+
+.win-gameover {
+    -fx-background-color: linear-gradient(to top left, darkgreen, black);
+	-fx-spacing: 10px;
+}
+
+.lose-gameover {
+    -fx-background-color: linear-gradient(to top left, darkred, white);
+	-fx-spacing: 10px;
+}
+
+.you-win {
+    -fx-text-fill:linear-gradient(palegreen, seagreen);
+    -fx-font-size: 72px;
+    -fx-font-weight: bold;
+}
+
+.you-lose {
+    -fx-text-fill:linear-gradient(red, darkred);
+    -fx-font-size: 72px;
+    -fx-font-weight: bold;
+}
+
+.win-btm {
+    -fx-background-color: linear-gradient(seagreen, palegreen);
+}

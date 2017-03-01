@@ -40,5 +40,5 @@ public abstract class Entity {
 		return uuid;
 	}
 	
-	
+	abstract public void onLand(Player p);
 }

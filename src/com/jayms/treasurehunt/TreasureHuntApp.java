@@ -18,6 +18,8 @@ import com.jayms.treasurehunt.Game.GameInitData;
 
 public class TreasureHuntApp extends Application {
 	
+	public static TreasureHuntApp instance;
+	
 	private static final int ROWS = 8;
     private static final int COLUMNS = 8;
     private static final int TREASURE_CHESTS = 10;
@@ -28,9 +30,7 @@ public class TreasureHuntApp extends Application {
     public static final String STYLE_SHEET = "styles.css";
     
     private Stage stage;
-    private Scene gameScene;
     private Scene menuScene;
-    private TreasureGrid grid;
     private Game game;
 	
 	@Override
@@ -49,6 +49,7 @@ public class TreasureHuntApp extends Application {
 			}
         	
         });
+        
         Button quitGame = new Button("Quit");
         
         menuButtons.getChildren().addAll(playGame, quitGame);
@@ -67,12 +68,17 @@ public class TreasureHuntApp extends Application {
 
 	@Override
     public void start(final Stage stage) throws Exception {
+		instance = this;
 		this.stage = stage;
         stage.setTitle("TreasureHunt");
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/img/treasure_hunt_logo.png")));
         stage.setScene(menuScene);
         stage.show();
     }
+	
+	public void backToMenu() {
+		stage.setScene(menuScene);
+	}
 
     public static class Anims {
 
