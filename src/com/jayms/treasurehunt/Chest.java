@@ -21,10 +21,7 @@ public class Chest extends Entity {
 	
 	public boolean visit() {
 		visitCount++;
-		if (visitCount > 3) {
-			return true;
-		}
-		return false;
+		return visitCount > 3;
 	}
 
 	@Override
@@ -37,7 +34,6 @@ public class Chest extends Entity {
 				grid.addEntity(bandit);
 				grid.getGridSlot(loc.getPosition().getX(), loc.getPosition().getY()).setCachedEntity(bandit);
 				grid.removeEntity(this);
-				
 			}
 		}
 	}

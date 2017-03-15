@@ -9,10 +9,18 @@ import javafx.scene.layout.RowConstraints;
 
 import com.jayms.treasurehunt.TreasureHuntApp.Anims;
 
+/**
+ * Represents and offers all of the base Grid functionality.
+ * @author james
+ */
 public class Grid extends GridPane {
 	
+	/**
+	 * Initializes the Grid class.
+	 * @param rows
+	 * @param columns
+	 */
 	public Grid(int rows, int columns) {
-		this.getStyleClass().add("grid-pane");
 		this.getStyleClass().add("game-grid");
 		
 		for(int i = 0; i < columns; i++) {
@@ -28,6 +36,7 @@ public class Grid extends GridPane {
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < rows; j++) {
                 GridSlot slot = new GridSlot();
+                slot.empty();
                 slot.getStyleClass().add("game-grid-cell");
                 if (i == 0) {
                 	slot.getStyleClass().add("first-column");

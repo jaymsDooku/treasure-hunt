@@ -33,6 +33,13 @@ public class TreasureGrid extends Grid {
 		this.bandits.setInt(bandits);
 	}
 	
+	/**
+	 * Initializes the state of the game Treasure Hunt game.
+	 * Creates all of the pre-determined entities and player character, and invokes the @see com.jayms.treasurehunt.TreasureGrid.randomizeEntities 
+	 * @param game
+	 * @param coinLabel
+	 * @return
+	 */
 	public Player initGame(Game game, Label coinLabel) {
 		for (int i = 0; i < treasureChests.getInt(); i++) {
 			addEntity(new Chest(CHEST_WORTH));
@@ -40,6 +47,12 @@ public class TreasureGrid extends Grid {
 		for (int i = 0; i < bandits.getInt(); i++) {
 			addEntity(new Bandit());
 		}
+		/*int numBandits = bandits.getInt();
+		int i = 0;
+		while (i < numBandits) {
+			addEntity(new Bandit());
+			i++;
+		}*/
 		Player p = new Player(game, coinLabel);
 		addEntity(p);
 		movePlayer(p, new Vector2DInt(0, 0));
@@ -57,6 +70,10 @@ public class TreasureGrid extends Grid {
 		return slot.getEntity();
 	}
 	
+	/**
+	 * Adds entity to <code>entities</code> if it is not on the grid.
+	 * @param entity - entity to add.
+	 */
 	public void addEntity(Entity entity) {
 		if (onGrid(entity)) {
 			return;
@@ -64,12 +81,19 @@ public class TreasureGrid extends Grid {
 		entities.put(entity.getUniqueID(), entity);
 	} 
 	
+	/**
+	 * Removes entity from <code>entities</code> if it is on the grid.
+	 * @param entity - entity to remove. 
+	 */
 	public void removeEntity(Entity entity) {
 		if (onGrid(entity)) {
 			entities.remove(entity.getUniqueID());
 		}
 	}
 
+	/**
+	 * Sets all of the entities to random positions on the grid.
+	 */
 	public void randomizeEntities() {
 		List<Vector2DInt> prevVecs = new ArrayList<>();
 		ArrayList<Entity> ents = new ArrayList<>(entities.values());
@@ -92,10 +116,21 @@ public class TreasureGrid extends Grid {
 		}
 	}
 	
+	/**
+	 * Returns <code>true</code> if the entity is on the grid.
+	 * @param entity - the entity to check.
+	 * @return <code>true</code> if the entity is on the grid;
+	 *         <code>false</code> otherwise
+	 */
 	public boolean onGrid(Entity entity) {
 		return entities.containsKey(entity.getUniqueID());
 	}
 	
+	/**
+	 * Moves an entity to the specified vector on the grid as long as the entity is on the grid.
+	 * @param entity - the entity to move.
+	 * @param pos - the vector to move the entity to.
+	 */
 	public void moveEntity(Entity entity, Vector2DInt pos) {
 		if (!onGrid(entity)) {
 			return;
@@ -130,8 +165,7 @@ public class TreasureGrid extends Grid {
 		for (Entity e : entities.values()) {
 			if (e instanceof Chest) {
 				chests++;
-			}
-			if (e instanceof Bandit) {
+			} else if (e instanceof Bandit) {
 				bandits++;
 			}
 		}

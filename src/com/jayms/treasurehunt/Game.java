@@ -148,10 +148,12 @@ public class Game {
 	
 	public void start(Stage s) {
 		stage = s;
-		p = grid.initGame(this, coins);
+		gameOver(true);
+		return;
+		/*p = grid.initGame(this, coins);
 		this.stage = s;
 		stage.setScene(gameScene);
-		enterMove();
+		enterMove();*/
 	}
 	
 	public void gameOver(boolean won) {

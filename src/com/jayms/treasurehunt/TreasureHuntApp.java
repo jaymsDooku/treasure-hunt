@@ -49,7 +49,6 @@ public class TreasureHuntApp extends Application {
 			}
         	
         });
-        
         Button quitGame = new Button("Quit");
         
         menuButtons.getChildren().addAll(playGame, quitGame);
